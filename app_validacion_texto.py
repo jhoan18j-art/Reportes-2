@@ -9,6 +9,7 @@ st.set_page_config(page_title="Club Park - Reporte Operativo", page_icon="🚗",
 # Cabecera institucional con el Logotipo integrado
 col_logo, col_titulo = st.columns([1, 4])
 with col_logo:
+    # Carga automática del logotipo local si se encuentra en la misma carpeta
     if os.path.exists("logo.png"):
         st.image("logo.png", width=220)
     else:
@@ -66,5 +67,76 @@ with st.form("form_reporte_completo"):
     with c4:
         elaboro = st.text_input("✍️ Elaboró Reporte (Nombre)*", placeholder="Ej. Gaby")
     with c5:
-        recibe = st.text_input("👤 Quien Recibe Report
-                               
+        recibe = st.text_input("👤 Quien Recibe Reporte (Nombre)*", placeholder="Ej. Jesús")
+
+    # Cálculos automáticos y financieros
+    total_sueldos_nominas = lider_sueldo + operador1_sueldo + operador2_sueldo
+    total_gastos = gastos_operacion + gastos_especiales + gastos_generales + total_sueldos_nominas
+    ingreso_bruto = boletos_pagados * costo_boleto
+    ingreso_neto = ingreso_bruto - total_gastos
+    cantidad_entregar = ingreso_neto
+
+    st.markdown("### 📊 Resumen Financiero Calculado")
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Total Gastos y Nóminas", f"${total_gastos:,.2f}")
+    m2.metric("Ingreso Bruto", f"${ingreso_bruto:,.2f}")
+    m3.metric("Ingreso Neto", f"${ingreso_neto:,.2f}", delta=f"${ingreso_neto:,.2f}")
+    m4.metric("Cantidad a Entregar", f"${cantidad_entregar:,.2f}")
+
+    submitted = st.form_submit_button("💾 Validar y Guardar Registro en el Consolidado Semanal")
+
+    if submitted:
+        # Validación estricta obligatoria
+        if not sitio.strip() or not elaboro.strip() or not recibe.strip():
+            st.error("❌ Error de validación: Los campos 'Sitio / Unidad', 'Elaboró Reporte' y 'Quien Recibe Reporte' son obligatorios.")
+        elif foto_reporte is None:
+            st.warning("⚠️ Advertencia: Es necesario adjuntar la fotografía de la hoja de reporte físico.")
+        else:
+            nuevo_registro = {
+                "Fecha": str(fecha),
+                "Sitio / Unidad": sitio,
+                "Costo Boleto": costo_boleto,
+                "Folio Inicial": folio_inicial,
+                "Folio Final": folio_final,
+                "Folio sin desprender": folio_sin_desprender,
+                "Total Boletos": total_boletos,
+                "Boletos Pagados": boletos_pagados,
+                "Cancelados": boletos_cancelados,
+                "Pérdidos": boletos_perdidos,
+                "Total Entregados": total_boletos_entregados,
+                "Gastos Operación": gastos_operacion,
+                "Líder Sueldo": lider_sueldo,
+                "Operador 1 Sueldo": operador1_sueldo,
+                "Operador 2 Sueldo": operador2_sueldo,
+                "Gastos Especiales": gastos_especiales,
+                "Total Gastos y Nóminas": total_gastos,
+                "Gastos Generales": gastos_generales,
+                "Ingreso Bruto": ingreso_bruto,
+                "Ingreso Neto": ingreso_neto,
+                "Cantidad a Entregar": cantidad_entregar,
+                "Elaboró": elaboro,
+                "Recibe": recibe,
+                "Evidencia Foto": "Sí"
+            }
+            st.session_state.registros.append(nuevo_registro)
+            st.success(f"¡El reporte del sitio '{sitio}' ha sido validado y guardado exitosamente!")
+
+# Sección de visualización y exportación consolidada
+if st.session_state.registros:
+    st.markdown("---")
+    st.markdown("### 📈 Consolidado Semanal Acumulado")
+    df_reportes = pd.DataFrame(st.session_state.registros)
+    st.dataframe(df_reportes, use_container_width=True)
+
+    csv_export = df_reportes.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="📥 Descargar Reporte Semanal Completo en CSV (Excel)",
+        data=csv_export,
+        file_name="Consolidado_Semanal_ClubPark.csv",
+        mime="text/csv",
+    )
+
+    if st.button("🗑️ Limpiar Todos los Registros"):
+        st.session_state.registros = []
+        st.rerun()
+        
