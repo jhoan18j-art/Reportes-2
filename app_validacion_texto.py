@@ -5,25 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Club Park - Reporte Operativo Semanal</title>
     <style>
-        :root {
-            --bg-color: #f4f6f9;
-            --card-bg: #ffffff;
-            --primary: #212529;
-            --accent: #0d6efd;
-            --success: #198754;
-            --border: #ced4da;
-        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
             margin: 0;
             padding: 10px;
-            color: var(--primary);
+            color: #212529;
         }
         .container {
             max-width: 480px;
             margin: 0 auto;
-            background: var(--card-bg);
+            background: #ffffff;
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -45,25 +37,21 @@
         }
         label {
             display: block;
-            font-weight: 600;
+            font-weight: bold;
             font-size: 0.85rem;
             margin-bottom: 5px;
         }
-        input, select {
+        input {
             width: 100%;
             padding: 10px;
-            border: 1px solid var(--border);
+            border: 1px solid #ced4da;
             border-radius: 8px;
             font-size: 1rem;
             box-sizing: border-box;
             background-color: #fff;
         }
-        input:focus {
-            border-color: var(--accent);
-            outline: none;
-        }
         .camera-box {
-            border: 2px dashed var(--accent);
+            border: 2px dashed #0d6efd;
             padding: 12px;
             text-align: center;
             border-radius: 8px;
@@ -98,7 +86,7 @@
         }
         button {
             width: 100%;
-            background-color: var(--accent);
+            background-color: #0d6efd;
             color: white;
             border: none;
             padding: 12px;
@@ -108,11 +96,8 @@
             cursor: pointer;
             margin-top: 8px;
         }
-        button:active {
-            opacity: 0.85;
-        }
         .btn-export {
-            background-color: var(--success);
+            background-color: #198754;
         }
         .btn-clear {
             background-color: #dc3545;
@@ -189,7 +174,6 @@
 </div>
 
 <script>
-    // Establecer fecha actual
     document.getElementById('fecha').valueAsDate = new Date();
 
     function previewImage(event) {
@@ -286,4 +270,3 @@
 
 </body>
 </html>
-
